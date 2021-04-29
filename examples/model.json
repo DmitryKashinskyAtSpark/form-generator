@@ -1,0 +1,16 @@
+{
+  "$schema$": "http://form-generator.com/schemas/<uid>:<human-readable>",
+  "id": 1,
+  "name": "Chucha",
+  "type": "dog",
+  "breed": "chihuahua",
+  "isTailPresent": true,
+  "tailLength": 15,
+  "pawsCount": 3,
+  "dateOfBirth": "2021-04-29T10:28:11.087Z",
+  "placeOfBith": {
+    "countryCode": "RU",
+    "state": "Saratov"
+  },
+  "owner": null
+}

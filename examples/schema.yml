@@ -1,0 +1,56 @@
+model:
+  name: dog
+  namespace: pets.goodBoys
+  properties:
+    - name: id
+      type: int
+      validation:
+        - type: required
+    - name: name
+      type: string
+      validation:
+        - type: required
+        - type: minLength
+          value: 2
+        - type: maxLength
+          value: 30
+    - name: type
+      type: string
+      validation:
+        - type: required
+        - type: regex
+          pattern:
+            $ref: '#/refs/petTypeRegex'
+    - name: breed
+      type: string
+      validation:
+        - type: required
+        - type: oneOf
+          pattern:
+            $ref: '#/refs/petType'
+    - name: isTailPresent
+      type: bool
+    - name: tailLength
+      type: int
+      validation:
+        - type: range
+          minValue: 1
+          maxValue: 10
+    - name: owner
+      type: int
+  constraints:
+    - type: primaryKey
+      property: id
+    - type: autoIncrement
+      property: id
+    - type: foreignKey
+      property: owner
+      refType: keycloak.user
+      refProperty: id
+  validation: []
+refs:
+  petTypeRegex: dog | cat | hedgehog
+  petType:
+    - dog
+    - cat
+    - hedgehog

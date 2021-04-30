@@ -1,155 +1,109 @@
 {
-  "properties": {
-    "id": {
-      "description": "Unique id",
-      "type": "string",
-      "validation": [
-        "required"
-      ]
-    },
-    "name": {
-      "description": "Pet name",
-      "type": "string",
-      "validation": [
-        "required",
-        "minLength:2",
-        "maxLength:30"
-      ],
-      "form": {
-        "label": "Pet Name",
-        "placeholder": "Input pet name",
-        "inputType": "text-input",
-        "placement": {
-          "pos": [1, 1]
-        },
-        "condition": {
-          "present": true,
-          "enabled": true
-        }
-      }
-    },
-    "type": {
-      "description": "pet type",
-      "type": "string",
-      "validation": [
-        "required",
-        "oneOf:#/refs/petType"
-      ],
-      "form": {
-        "label": "Pet Type",
-        "placeholder": "choose your pet type",
-        "inputType": "select",
-        "placement": {
-          "pos": [1, 2]
-        },
-        "appearance": {
-          "present": true,
-          "enabled": true
-        }
+  "model": {
+    "name": "dog",
+    "namespace": "pets.goodBoys",
+    "properties": [
+      {
+        "name": "id",
+        "type": "int",
+        "validation": [
+          {
+            "type": "required"
+          }
+        ]
       },
-      "store": {
-        "dataSource": {
-          "type": "static",
-          "provider": "#/refs/petType"
-        }
-      }
-    },
-    "breed": {
-      "description": "dog breed",
-      "type": "string",
-      "validation": [
-        "requiredIf:#/condition/dog",
-        "oneOf:#/refs/petType"
-      ],
-      "form": {
-        "label": "Pet Type",
-        "placeholder": "choose your pet type",
-        "inputType": "select",
-        "placement": {
-          "pos": [1, 2]
-        },
-        "appearance": {
-          "present": true,
-          "enabled": true
-        }
+      {
+        "name": "name",
+        "type": "string",
+        "validation": [
+          {
+            "type": "required"
+          },
+          {
+            "type": "minLength",
+            "value": 2
+          },
+          {
+            "type": "maxLength",
+            "value": 30
+          }
+        ]
       },
-      "store": {
-        "dataSource": {
-          "type": "static",
-          "provider": "#/refs/petType"
-        }
-      }
-    },
-    "isTailPresent": {
-      "description": "identifies wether pet has tail",
-      "type": "boolean",
-      "form": {
-        "label": "Has Tail?",
-        "inputType": "checkbox",
-        "placement": {
-          "pos": [2, 1]
-        },
-        "appearance": {
-          "present": true,
-          "enabled": true
-        }
-      }
-    },
-    "tailLength": {
-      "description": "tail length if present",
-      "type": "integer",
-      "validation": [
-        "requiredIf:#/condition/tailPresent",
-        "range:[1-10]"
-      ],
-      "form": {
-        "label": "Tail Length",
-        "inputType": "number-input",
-        "placement": {
-          "pos": [2, 2]
-        },
-        "appearance": {
-          "present": "#/condition/tailPresent",
-          "enabled": true
-        }
-      }
-    },
-    "owner": {
-      "description": "pet owner",
-      "type": "string",
-      "validation": [
-        "oneOf:#store/dataSource"
-      ],
-      "form": {
-        "label": "Owner",
-        "inputType": "select",
-        "placement": {
-          "pos": [3, 1],
-          "colspan": 2
-        },
-        "appearance": {
-          "present": true,
-          "enabled": "#/condition/isAdmin"
-        }
+      {
+        "name": "type",
+        "type": "string",
+        "validation": [
+          {
+            "type": "required"
+          },
+          {
+            "type": "regex",
+            "pattern": {
+              "$ref": "#/refs/petTypeRegex"
+            }
+          }
+        ]
       },
-      "store": {
-        "dataSource": {
-          "type": "external",
-          "provider": "http",
-          "endpoint": "http://external.url/users"
-        }
+      {
+        "name": "breed",
+        "type": "string",
+        "validation": [
+          {
+            "type": "required"
+          },
+          {
+            "type": "oneOf",
+            "pattern": {
+              "$ref": "#/refs/petType"
+            }
+          }
+        ]
+      },
+      {
+        "name": "isTailPresent",
+        "type": "bool"
+      },
+      {
+        "name": "tailLength",
+        "type": "int",
+        "validation": [
+          {
+            "type": "range",
+            "minValue": 1,
+            "maxValue": 10
+          }
+        ]
+      },
+      {
+        "name": "owner",
+        "type": "int"
       }
-    }
-  },
-  "validation": {
-    "isUnique": "(val) => ![1,2,3].contains(val)"
-  },
-  "condition": {
-    "dog": "property.type/equals/dog",
-    "tailPresent": "property.isTailPresent/equals/true",
-    "isAdmin": "currentUser.role/equals/admin"
+    ],
+    "constraints": [
+      {
+        "type": "primaryKey",
+        "property": "id"
+      },
+      {
+        "type": "autoIncrement",
+        "property": "id"
+      },
+      {
+        "type": "foreignKey",
+        "property": "owner",
+        "refType": "keycloak.user",
+        "refProperty": "id"
+      }
+    ],
+    "validation": [
+    ]
   },
   "refs": {
-    "petType": ["dog", "cat", "hedgehog"]
+    "petTypeRegex": "dog | cat | hedgehog",
+    "petType": [
+      "dog",
+      "cat",
+      "hedgehog"
+    ]
   }
 }
